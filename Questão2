@@ -1,0 +1,31 @@
+# arquivo questao2.py
+
+import funcao_ordena
+
+
+def main():
+    nome_arquivo = input('Informe o nome do arquivo: ')
+
+    sucesso, lista = funcao_ordena.ler_arquivo(nome_arquivo)
+
+    if sucesso:
+        print(f'O arquivo {nome_arquivo} foi lido com sucesso.')
+        print(f'A lista gerada é: {lista}')
+
+        metodo_ordena = input('Informe o método de ordenação (BUBBLE, INSERTION, SELECTION, QUICK): ')
+
+        if metodo_ordena in ('BUBBLE', 'INSERTION', 'SELECTION', 'QUICK'):
+            sucesso, lista_ordenada = funcao_ordena.ordena_lista(lista, metodo_ordena)
+
+            if sucesso:
+                print(f'A lista ordenada é: {lista_ordenada}')
+            else:
+                print(f'A lista não foi ordenada.')
+        else:
+            print(f'O método de ordenação "{metodo_ordena}" não é válido.')
+    else:
+        print(f'O arquivo {nome_arquivo} não foi lido com sucesso.')
+
+
+if __name__ == '__main__':
+    main()
