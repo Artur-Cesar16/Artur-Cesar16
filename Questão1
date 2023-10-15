@@ -1,0 +1,22 @@
+#Principal
+
+import funcoes
+
+quantidade = funcoes.ler_inteiro('Digite a quantidade de valores: ')
+valor_minimo = funcoes.ler_inteiro('Digite o valor mínimo: ')
+valor_maximo = funcoes.ler_inteiro('Digite o valor máximo: ')
+#Essa parte importa a função ler_inteiro do arquivo funções
+
+lista_gerada, lista = funcoes.gerar_lista(quantidade, valor_minimo, valor_maximo)
+
+if lista_gerada:
+    nome_lista = 'lista_gerada.txt'
+    sucesso = funcoes.salvar_lista(lista, nome_lista)
+#Aqui identifica se a lista foi gerada com sucesso a partir do if re.match(r'^[0-9]+$', entrada) and int(entrada) > 0:
+    if sucesso:
+        nome_arquivo = 'lista_gerada.txt'
+        print(f'Lista salva com sucesso em {nome_arquivo}.')
+    else:
+        print('Não foi possível salvar a lista.')
+else:
+    print('Não foi possível gerar a lista.')
