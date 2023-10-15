@@ -1,0 +1,35 @@
+#Função questão 1
+
+from random import randint
+import re
+
+def ler_inteiro(mensagem):
+    while True:
+        entrada = input(mensagem)
+        if re.match(r'^[0-9]+$', entrada) and int(entrada) > 0:
+            return int(entrada)
+        else:
+            print('O valor informado não é um inteiro válido.')
+
+def gerar_lista(quantidade, valor_minimo, valor_maximo):
+    lista = []
+    for i in range(quantidade):
+        valor = randint(valor_minimo, valor_maximo)
+        lista.append(valor)
+
+    return lista is not None, lista
+
+def salvar_lista(nome_lista, nome_arquivo):
+    try:
+        with open(nome_arquivo, 'w') as arquivo:
+            for valor in nome_lista:
+                arquivo.write(str(valor) + '\n')
+        return True
+    except FileNotFoundError:
+        print(f'O arquivo {nome_arquivo} não existe.')
+        return False
+    except PermissionError:
+        print(f'O arquivo {nome_arquivo} não tem permissão de escrita.')
+        return False
+    except ValueError:
+        print(f'Digite apenas números inteiros válidos')
