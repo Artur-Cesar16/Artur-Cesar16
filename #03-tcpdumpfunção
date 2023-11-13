@@ -1,0 +1,13 @@
+import struct
+
+def ler_cabecalho_arquivo(file):
+    cabecalho_formato = ">IHHIIIB" #formato do cabeçalho na biblioteca struct
+    tamanho_cabecalho = struct.calcsize(cabecalho_formato) #calculo do cabeçalho
+    dados_cabecalho = file.read(tamanho_cabecalho)
+    return struct.unpack(cabecalho_formato, dados_cabecalho)
+
+def ler_pacote(file):
+    pacote_formato = ">IIII"
+    tamanho_pacote = struct.calcsize(pacote_formato)
+    dados_pacote = file.read(tamanho_pacote)
+    return struct.unpack(pacote_formato, dados_pacote)
