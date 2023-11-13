@@ -1,0 +1,16 @@
+from tcpdumpfunção import ler_cabecalho_arquivo, ler_pacote
+
+def main():
+    with open('cap1.dump' and 'cap2.dump', 'rb') as file:
+        # vai ler o cabeçalho do arquivo
+        cabecalho = ler_cabecalho_arquivo(file)
+        print(f"Cabeçalho do Arquivo: {cabecalho}")
+
+        # Lê os pacotes
+        num_pacotes = 2  
+        for i in range(num_pacotes):
+            pacote = ler_pacote(file)
+            print(f"Pacote {i + 1}: {pacote}")
+
+if __name__ == "__main__":
+    main()
