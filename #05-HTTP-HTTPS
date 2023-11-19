@@ -1,6 +1,9 @@
 import socket
 
 url = input('Digite a URL completa da imagem na WEB: ')
+
+# Divide a URL para pegar o host e o caminho da imagem
+
 url_parts = url.split('//')
 host, image = url_parts[1].split('/', 1) #separa a URL
 filename = image.split('/')[-1]
@@ -10,12 +13,17 @@ url_request = f'GET /{image} HTTP/1.1\r\nHOST: {host}\r\n\r\n'
 HOST_PORT = 80
 BUFFER_SIZE = 1024
 
+#conexao com o socket
+
 sock_img = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 sock_img.connect((host, HOST_PORT))
 sock_img.sendall(url_request.encode())
 
 print('\nBaixando a imagem...')
 data_ret = b''
+
+#Recebe os dados da imagem em pedaços e os junta
+
 while True:
     data = sock_img.recv(BUFFER_SIZE)
     if not data:
@@ -25,6 +33,9 @@ while True:
 sock_img.close()
 
 img_size = -1
+
+#tamanho da imagem
+
 tmp = data_ret.split('\r\n'.encode())
 for line in tmp:
     if 'Content-Length:'.encode() in line:
@@ -32,10 +43,14 @@ for line in tmp:
         break
 print(f'\nTamanho da Imagem: {img_size} bytes')
 
+#separa os headers e dados
+
 delimiter = '\r\n\r\n'.encode()
 position = data_ret.find(delimiter)
 headers = data_ret[:position]
 image = data_ret[position+4:]
+
+# Salva a imagem localmente como 'imagem.png'
 
 file_output = open('imagem.png', 'wb')
 file_output.write(image)
