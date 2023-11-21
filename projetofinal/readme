@@ -1,1 +1,31 @@
+PROJETO DA DISCIPLINA - APLICAÇÃO CLIENTE/SERVIDOR COM BOT NO TELEGRAM
+
+
+PROTOCOLO ESCOLHIDO: TCP.
+
+
+° O protocolo TCP foi escolhido para garantir confiabilidade na entrega de dados e controle de fluxo
+pois são fundamentais para a garantia de integridade das informações transmitidas.
+E também, por ser mais seguro que o protocolo UDP.
+
+
+OS COMANDOS E SUAS CARACTERÍSTICAS:
+
+
+° H -> Será usado para solicitar ao agente as informações sobre o Hardware(CPU, MEMÓRIA, DISCO, SO, ETC.)
+
+° P -> Esse comando será usado para solicitar a lista de programas instalado nos computadores
+dos agentes
+
+° N -> Comando busca o histórico de navegação de diferentes navegadores tanto no Windows quanto no Linux.
+
+° U -> Comando solicita informação sobre o usuário logado, como: diretório, Identificador de usuário,
+grupo principal, secundário, shell padrão, entre outros.
+
+° A -> Esse, lista os agentes online, traz informações como IP, nome do HOST, usuário logado e o tempo que o agente está online.
+
+
+
+
+
 
