@@ -1,24 +1,26 @@
 import socket
 from socket_constants import *
 
-print('Recebendo Mensagens...\n\n')
-
 # Criando o socket TCP
-tcp_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+server_socket.bind(("localhost", SOCKET_PORT))
+server_socket.listen(MAX_LISTEN)
 
-# Ligando o socket a porta
-tcp_socket.bind((HOST_SERVER, SOCKET_PORT))
-
-# Máximo de conexões enfileiradas
-tcp_socket.listen(MAX_LISTEN)
+print("Recebendo Mensagens...\n\n")
 
 while True:
-   # Aceita a conexão com o cliente
-   conexao, cliente = tcp_socket.accept()
-   print('Conectado por: ', cliente)
-   while True:
-      mensagem = conexao.recv(BUFFER_SIZE)
-      if not mensagem: break
-      print(cliente, mensagem.decode(CODE_PAGE))
-   print('Finalizando Conexão do Cliente ', cliente)
-   conexao.close()
+    client_socket, endereço = server_socket.accept()
+    print(f"Conectado por: {endereço}")
+
+    with client_socket:
+        while True:
+            data = client_socket.recv(BUFFER_SIZE)
+            if not data:
+                break
+
+            mensagem = data.decode(CODE_PAGE)
+            print(f"{endereço} {mensagem}")
+
+            # Devolvendo uma mensagem (echo) ao cliente
+            mensagem_retorno = f"Devolvendo...{mensagem}"
+            client_socket.sendall(mensagem_retorno.encode(CODE_PAGE))
