@@ -1,20 +1,20 @@
 import socket
 from socket_constants import *
 
-# Digitando a mensagem a ser enviada
-mensagem = input('Digite a mensagem: ')
-
-# Criando o socket TCP
+   
 tcp_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-
-# Ligando o socket a porta
 tcp_socket.connect((HOST_SERVER, SOCKET_PORT))
 
-# Convertendo a mensagem digitada de string para bytes
-mensagem = mensagem.encode(CODE_PAGE)
+while True:
+    # Lendo a mensagem do usuário
+    mensagem = input("Digite a mensagem: ")
 
-# Enviando a mensagem ao servidor      
-tcp_socket.send(mensagem)
+    if mensagem:
+        mensagem_bytes = mensagem.encode(CODE_PAGE)
+        tcp_socket.sendall(mensagem_bytes)
 
-# Fechando o socket
+        data_retorno = tcp_socket.recv(BUFFER_SIZE)
+        mensagem_retorno = data_retorno.decode(CODE_PAGE).strip()
+        print("Echo Recebido:", mensagem_retorno)
+
 tcp_socket.close()
