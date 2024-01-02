@@ -1,46 +1,57 @@
-import requests, time
+import socket, threading
+from env import PORT, SERVER
 
-token = '6871814803:AAEK-gg1Cbx13B-MWsVErZWkh6osZh23Hc0'
+def cliInteraction(sockConn, addr):
+    msg = ''
+    while msg != '!q':
+        try:
+            msg = sockConn.recv(512)
+            responseOption(msg, addr)
+            broadCast (msg, addr)
+        except:
+            msg = '!q'
+    allSocks.remove ((sockConn, addr))
+    sockConn.close()
 
-def enviarMensagem(id_chat, mensagem):
-    dados = {'chat_id':id_chat, 'text': mensagem}
-    post = requests.post(f'https://api.telegram.org/bot{token}/sendMessage',data=dados)
+def broadCast(msg, addrSource):
+    msg = f"{addrSource} -> {msg.decode('utf-8')}"
 
+    for sockConn, addr in allSocks:
+        if addr != addrSource:
+            sockConn.send(msg.encode('utf-8'))
 
-offset = 1
-
-while True:
-    url_base = ''
-
-    #Se for o primeiro loop, ele não precisa ter offset
-    if offset == 1:
-        url_base = f'https://api.telegram.org/bot{token}/getUpdates?timeout=2'
+def responseOption(message, addrSource):
+    if message == b'info':
+        send_message_to_requester('Informações básicas sobre a rede (ip, máscara, gateway).', addrSource)
+    elif message == b'ping':
+        send_message_to_requester('Tempo médio de ping (quatro pacotes) entre a máquina do bot e seu gateway.', addrSource)
+    elif message == b'active':
+        send_message_to_requester('Informa se o ip está respondendo.', addrSource)
+    elif message == b'dns':
+        send_message_to_requester('Informa o servidor de DNS da máquina do bot.', addrSource)
+    elif message == b'download':
+        send_message_to_requester('Download de uma imagem da internet no servidor.', addrSource)
     else:
-        url_base = f'https://api.telegram.org/bot{token}/getUpdates?timeout=2&offset={offset+1}'
+        send_message_to_requester(f'Olá, {addrSource}. Escolha uma das opções do menu: info - ping - active - dns - download ou !q para sair', addrSource)
     
-    retorno = requests.get(url_base)
-    data = retorno.json()
-  
-    for update in data['result']:
-        chat_id = update['message']['chat']['id']
-        mensagem = update['message']['text']
+def send_message_to_requester(message, addrSource):
+    for sockConn, addr in allSocks:
+        if addr == addrSource:
+            sockConn.send(message.encode('utf-8'))
 
-        if mensagem == '/info':
-            enviarMensagem(chat_id, 'Informações básicas sobre a rede (ip, máscara, gateway).')
-        elif mensagem == '/ping':
-            enviarMensagem(chat_id, 'Tempo médio de ping (quatro pacotes) entre a máquina do bot e seu gateway.')
-        elif mensagem == '/active':
-            enviarMensagem(chat_id, 'Informa se o ip está respondendo.')
-        elif mensagem == '/dns':
-            enviarMensagem(chat_id, 'Informa o servidor de DNS da máquina do bot.')
-        elif mensagem == '/download':
-            enviarMensagem(chat_id, 'Download de uma imagem da internet no servidor.')
-        else:
-            enviarMensagem(chat_id, f'Olá, {update["message"]["from"]["first_name"]}. Escolha uma das opções ao lado do seu input de mensagem para saber mais.')
+try:
+    allSocks = []
+    sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    sock.bind((SERVER, PORT))
 
-        print(f'Chat ID: {chat_id}\nMensagem: {mensagem}\nPor: {update["message"]["from"]["first_name"]}')
+    print ("Listening in: ", (SERVER, PORT))
+    sock.listen(5)
 
-        offset =  update['update_id'] #Para que ela não retorno de novo nos updates
-        print(update)
-    
-    time.sleep(3)
+    while True:
+        sockConn, addr = sock.accept()
+        print ("Connection from: ", addr)
+        allSocks.append((sockConn, addr))
+        tClient = threading.Thread(target=cliInteraction, args=(sockConn, addr))
+        tClient.start()
+except Exception as e:
+    print ("Fail: ", e)
